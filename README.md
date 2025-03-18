@@ -1,2 +1,2 @@
-# FermiumBooter
- Simplistic mixin mod utility to apply toggle-able mixins to both early and late loaded classes
+# FermiumBooterRepoliticization
+Just a simple combination of [FermiumBooter](https://www.curseforge.com/minecraft/mc-mods/fermiumbooter) and [Bat Happy Mod](https://www.curseforge.com/minecraft/mc-mods/bat-happy-mod)

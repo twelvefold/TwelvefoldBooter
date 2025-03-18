@@ -2,13 +2,11 @@ package fermiumbooter;
 
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
+import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Mod(modid = FermiumBooter.MODID, version = FermiumBooter.VERSION, name = FermiumBooter.NAME)
 public class FermiumBooter
@@ -16,19 +14,24 @@ public class FermiumBooter
     public static final String MODID = "fermiumbooter";
     public static final String VERSION = "1.1.1";
     public static final String NAME = "FermiumBooter";
-
-    private static final List<String> pedoModIds= Arrays.asList("mixinbooter","loliasm","naughthirium","flare","gregtech",
-            "gtclassic","groovyscript","configanytime");
+    @Config(modid = MODID)
+    public static final class ModConfig{
+        public static String[] pedoModIds={"mixinbooter","loliasm","naughthirium","flare",
+                "gtclassic","configanytime"};
+    }
 	@Instance(MODID)
+    @SuppressWarnings("unused")
 	public static FermiumBooter instance;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        for(String pedoModId:pedoModIds)
+        for(String pedoModId:ModConfig.pedoModIds)
         {
             if(Loader.isModLoaded(pedoModId))
-                throw new ReportedException(new CrashReport(String.format("Pedophilic mod detected:%s",pedoModId),new IllegalArgumentException()));
+                throw new ReportedException(CrashReport.makeCrashReport(new IllegalArgumentException(),
+                        String.format("Pedophilic mod detected:%s",pedoModId)));
         }
     }
+
 }

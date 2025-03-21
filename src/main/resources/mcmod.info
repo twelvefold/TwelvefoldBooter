@@ -5,10 +5,10 @@
   "description": "${mod_description}",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://www.curseforge.com/members/fonnymunkey/projects",
+  "url": "https://www.curseforge.com/members/repo_ranger/projects",
   "updateUrl": "",
   "authorList": ${mod_author},
-  "credits": "",
+  "credits": "fonnymunkey: The original author\nforestbat:source of the meme\nSnownee:Initial implementation of bathappymod",
   "logoFile": "icon.png",
   "dependencies": []
 }

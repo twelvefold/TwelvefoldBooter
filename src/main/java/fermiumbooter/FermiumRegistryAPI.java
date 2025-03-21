@@ -26,6 +26,7 @@ public abstract class FermiumRegistryAPI {
      * @param late - whether to apply the mixin late or early
      * @param configurations - mixin config resource names
      */
+    @SuppressWarnings("unused")
     public static void enqueueMixin(boolean late, String... configurations) {
         for(String configuration : configurations) {
             enqueueMixin(late, configuration);
@@ -86,6 +87,7 @@ public abstract class FermiumRegistryAPI {
      * Note: Realistically you should not use this, but it is provided in the case of specific tweaker mod needs
      * @param configuration - mixin config resource name
      */
+    @SuppressWarnings("unused")
     public static void removeMixin(String configuration) {
         if(configuration == null || configuration.trim().isEmpty()) {
             LOGGER.warn("FermiumRegistryAPI supplied null or empty configuration name for mixin removal, ignoring.");
@@ -97,6 +99,7 @@ public abstract class FermiumRegistryAPI {
 
     /**
      * Internal Use; Do Not Use
+     * @return earlyMixins
      */
     public static HashMap<String, List<Supplier<Boolean>>> getEarlyMixins() {
         return earlyMixins;
@@ -104,6 +107,7 @@ public abstract class FermiumRegistryAPI {
 
     /**
      * Internal Use; Do Not Use
+     * @return lateMixins
      */
     public static HashMap<String, List<Supplier<Boolean>>> getLateMixins() {
         return lateMixins;
@@ -111,6 +115,7 @@ public abstract class FermiumRegistryAPI {
 
     /**
      * Internal Use; Do Not Use
+     * @return rejectMixins
      */
     public static List<String> getRejectMixins() {
         return rejectMixins;

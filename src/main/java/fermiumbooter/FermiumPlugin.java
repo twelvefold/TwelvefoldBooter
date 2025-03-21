@@ -1,10 +1,12 @@
 package fermiumbooter;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import com.llamalad7.mixinextras.MixinExtrasBootstrap;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +21,7 @@ public class FermiumPlugin implements IFMLLoadingPlugin {
 	public static final Logger LOGGER = LogManager.getLogger("FermiumBooter");
 
 	public FermiumPlugin() {
+		EarlyConfig.init((File) FMLInjectionData.data()[6]);
 		MixinBootstrap.init();
 		MixinExtrasBootstrap.init();
 		Mixins.addConfiguration("mixins.fermiumbooter.init.json");
@@ -27,7 +30,7 @@ public class FermiumPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[0];
+		return new String[]{FermiumTransformer.class.getName()};
 	}
 	
 	@Override

@@ -20,8 +20,8 @@ public class EarlyConfig {
         File configFile=new File(minecraftHome,"fermiumbooter_earlyconfig.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         List<String> localConfig=new ArrayList<>();
-        localConfig.add("zone.rong");
-        localConfig.add("com.cleanroommc");
+        localConfig.add("com.sci.torcherino");
+        localConfig.add("moze_intel.projecte");
         if(configFile.isFile())
         {
             try {

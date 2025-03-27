@@ -8,16 +8,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = FermiumBooter.MODID, version = FermiumBooter.VERSION, name = FermiumBooter.NAME)
+@Mod(modid = FermiumBooter.MODID, useMetadata = true)
 public class FermiumBooter
 {
     public static final String MODID = "fermiumbooter";
-    public static final String VERSION = "1.1.1";
-    public static final String NAME = "FermiumBooter";
     @Config(modid = MODID)
     public static final class ModConfig{
-        public static String[] pedoModIds={"mixinbooter","loliasm","naughthirium","flare",
-                "gtclassic","configanytime"};
+        public static String[] conflictingModIds ={"torcherino","projecte"};
     }
 	@Instance(MODID)
     @SuppressWarnings("unused")
@@ -26,11 +23,11 @@ public class FermiumBooter
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        for(String pedoModId:ModConfig.pedoModIds)
+        for(String pedoModId:ModConfig.conflictingModIds)
         {
             if(Loader.isModLoaded(pedoModId))
                 throw new ReportedException(CrashReport.makeCrashReport(new IllegalArgumentException(),
-                        String.format("Pedophilic mod detected:%s",pedoModId)));
+                        String.format("Conflicting mod detected:%s",pedoModId)));
         }
     }
 

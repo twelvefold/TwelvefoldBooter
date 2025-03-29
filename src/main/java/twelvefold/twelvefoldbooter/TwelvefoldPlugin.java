@@ -1,4 +1,4 @@
-package fermiumbooter;
+package twelvefold.twelvefoldbooter;
 
 import java.io.File;
 import java.util.List;
@@ -13,30 +13,30 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
 
-@IFMLLoadingPlugin.Name("FermiumBooter")
+@IFMLLoadingPlugin.Name("TwelvefoldBooter")
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.SortingIndex(990)
-public class FermiumPlugin implements IFMLLoadingPlugin {
+public class TwelvefoldPlugin implements IFMLLoadingPlugin {
 
-	public static final Logger LOGGER = LogManager.getLogger("FermiumBooter");
+	public static final Logger LOGGER = LogManager.getLogger("TwelvefoldBooter");
 
-	public FermiumPlugin() {
-		EarlyConfig.init((File) FMLInjectionData.data()[6]);
+	public TwelvefoldPlugin() {
+		TwelvefoldEarlyConfig.init((File) FMLInjectionData.data()[6]);
 		MixinBootstrap.init();
 		MixinExtrasBootstrap.init();
-		Mixins.addConfiguration("mixins.fermiumbooter.init.json");
+		Mixins.addConfiguration("mixins.twelvefold.init.json");
 	}
 
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[]{FermiumTransformer.class.getName()};
+		return new String[]{TwelvefoldTransformer.class.getName()};
 	}
 	
 	@Override
 	public String getModContainerClass()
 	{
-		return null;
+		return TwelvefoldBooter.class.getName();
 	}
 	
 	@Override
@@ -50,10 +50,10 @@ public class FermiumPlugin implements IFMLLoadingPlugin {
 	 */
 	@Override
 	public void injectData(Map<String, Object> data) {
-		for(Map.Entry<String, List<Supplier<Boolean>>> entry : FermiumRegistryAPI.getEarlyMixins().entrySet()) {
+		for(Map.Entry<String, List<Supplier<Boolean>>> entry : TwelvefoldRegistryAPI.getEarlyMixins().entrySet()) {
 			//Check for removals
-			if(FermiumRegistryAPI.getRejectMixins().contains(entry.getKey())) {
-				LOGGER.warn("FermiumBooter received removal of \"" + entry.getKey() + "\" for early mixin application, rejecting.");
+			if(TwelvefoldRegistryAPI.getRejectMixins().contains(entry.getKey())) {
+				LOGGER.warn("TwelvefoldBooter received removal of \"" + entry.getKey() + "\" for early mixin application, rejecting.");
 				continue;
 			}
 			//Check for enabled
@@ -61,16 +61,16 @@ public class FermiumPlugin implements IFMLLoadingPlugin {
 			for(Supplier<Boolean> supplier : entry.getValue()) {
 				if(Boolean.TRUE.equals(enabled)) continue;//Short circuit OR
 				Boolean supplied = supplier.get();
-				if(supplied == null) LOGGER.warn("FermiumBooter received null value for individual supplier from \"" + entry.getKey() + "\" for early mixin application.");
+				if(supplied == null) LOGGER.warn("TwelvefoldBooter received null value for individual supplier from \"" + entry.getKey() + "\" for early mixin application.");
 				else enabled = supplied;
 			}
 			if(enabled == null) {
-				LOGGER.warn("FermiumBooter received null value for suppliers from \"" + entry.getKey() + "\" for early mixin application, ignoring.");
+				LOGGER.warn("TwelvefoldBooter received null value for suppliers from \"" + entry.getKey() + "\" for early mixin application, ignoring.");
 				continue;
 			}
 			//Add configuration
 			if(enabled) {
-				LOGGER.info("FermiumBooter adding \"" + entry.getKey() + "\" for early mixin application.");
+				LOGGER.info("TwelvefoldBooter adding \"" + entry.getKey() + "\" for early mixin application.");
 				Mixins.addConfiguration(entry.getKey());
 			}
 		}

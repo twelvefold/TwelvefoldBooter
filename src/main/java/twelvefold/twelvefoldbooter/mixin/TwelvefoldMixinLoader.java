@@ -1,7 +1,7 @@
-package fermiumbooter.mixin;
+package twelvefold.twelvefoldbooter.mixin;
 
-import fermiumbooter.FermiumPlugin;
-import fermiumbooter.FermiumRegistryAPI;
+import twelvefold.twelvefoldbooter.TwelvefoldPlugin;
+import twelvefold.twelvefoldbooter.TwelvefoldRegistryAPI;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.transformer.ext.Extensions;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -26,7 +27,7 @@ import java.util.function.Supplier;
  * https://github.com/DimensionalDevelopment/JustEnoughIDs/blob/master/src/main/java/org/dimdev/jeid/mixin/init/JEIDMixinLoader.java
  */
 @Mixin(Loader.class)
-public class FermiumMixinLoader {
+public class TwelvefoldMixinLoader {
 
     @Shadow(remap = false)
     private List<ModContainer> mods;
@@ -49,12 +50,12 @@ public class FermiumMixinLoader {
             }
         }
 
-        //Start FermiumBooter section
+        //Start TwelvefoldBooter section
 
-        for(Map.Entry<String, List<Supplier<Boolean>>> entry : FermiumRegistryAPI.getLateMixins().entrySet()) {
+        for(Map.Entry<String, List<Supplier<Boolean>>> entry : TwelvefoldRegistryAPI.getLateMixins().entrySet()) {
             //Check for removals
-            if(FermiumRegistryAPI.getRejectMixins().contains(entry.getKey())) {
-                FermiumPlugin.LOGGER.warn("FermiumBooter received removal of \"" + entry.getKey() + "\" for late mixin application, rejecting.");
+            if(TwelvefoldRegistryAPI.getRejectMixins().contains(entry.getKey())) {
+                TwelvefoldPlugin.LOGGER.warn("TwelvefoldBooter received removal of \"" + entry.getKey() + "\" for late mixin application, rejecting.");
                 continue;
             }
             //Check for enabled
@@ -62,24 +63,24 @@ public class FermiumMixinLoader {
             for(Supplier<Boolean> supplier : entry.getValue()) {
                 if(Boolean.TRUE.equals(enabled)) continue;//Short circuit OR
                 Boolean supplied = supplier.get();
-                if(supplied == null) FermiumPlugin.LOGGER.warn("FermiumBooter received null value for individual supplier from \"" + entry.getKey() + "\" for late mixin application.");
+                if(supplied == null) TwelvefoldPlugin.LOGGER.warn("TwelvefoldBooter received null value for individual supplier from \"" + entry.getKey() + "\" for late mixin application.");
                 else enabled = supplied;
             }
             if(enabled == null) {
-                FermiumPlugin.LOGGER.warn("FermiumBooter received null value for supplier from \"" + entry.getKey() + "\" for late mixin application, ignoring.");
+                TwelvefoldPlugin.LOGGER.warn("TwelvefoldBooter received null value for supplier from \"" + entry.getKey() + "\" for late mixin application, ignoring.");
                 continue;
             }
             //Add configuration
             if(enabled) {
-                FermiumPlugin.LOGGER.info("FermiumBooter adding \"" + entry.getKey() + "\" for late mixin application.");
+                TwelvefoldPlugin.LOGGER.info("TwelvefoldBooter adding \"" + entry.getKey() + "\" for late mixin application.");
                 Mixins.addConfiguration(entry.getKey());
             }
         }
 
         //Force clear the maps
-        FermiumRegistryAPI.clear();
+        TwelvefoldRegistryAPI.clear();
 
-        //End FermiumBooter section
+        //End TwelvefoldBooter section
 
         try {
             Class<?> proxyClass = Class.forName("org.spongepowered.asm.mixin.transformer.Proxy");

@@ -1,4 +1,4 @@
-package fermiumbooter;
+package twelvefold.twelvefoldbooter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,22 +6,22 @@ import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class EarlyConfig {
-    private static EarlyConfig instance=null;
+public class TwelvefoldEarlyConfig {
+    private static TwelvefoldEarlyConfig instance=null;
     private final List<String> config;
-    private EarlyConfig(File minecraftHome)
+    private static final String[] defaultConfig={"zone.rong","com.cleanroommc","gkappa","keletu","fermiumbooter"};
+    private TwelvefoldEarlyConfig(File minecraftHome)
     {
         config=readConfig(minecraftHome);
     }
     @SuppressWarnings({"unchecked"})
     private List<String> readConfig(File minecraftHome) {
-        File configFile=new File(minecraftHome,"fermiumbooter_earlyconfig.json");
+        File configFile=new File(minecraftHome,TwelvefoldBooter.MODID+"_earlyconfig.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        List<String> localConfig=new ArrayList<>();
-        localConfig.add("com.sci.torcherino");
-        localConfig.add("moze_intel.projecte");
+        List<String> localConfig = new ArrayList<>(Arrays.asList(defaultConfig));
         if(configFile.isFile())
         {
             try {
@@ -47,10 +47,11 @@ public class EarlyConfig {
     {
         if(instance != null)
             return;
-        instance=new EarlyConfig(minecraftHome);
+        instance=new TwelvefoldEarlyConfig(minecraftHome);
     }
     public static List<String> getConfig()
     {
+        instance.config.addAll(Arrays.asList(defaultConfig));
         return instance.config;
     }
 }

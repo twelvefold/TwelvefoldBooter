@@ -1,4 +1,4 @@
-package fermiumbooter;
+package twelvefold.twelvefoldbooter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,11 +11,11 @@ import java.util.function.Supplier;
 /**
  * Enqueue mixins to be applied or rejected from your IFMLLoadingPlugin class init
  * Includes options for disabling the mixin from a Supplier, and loading it either early or late
- * Configuration name is the name of the json pointing to your mixin, such as "mixins.fermiumbooter.init.json"
+ * Configuration name is the name of the json pointing to your mixin, such as "mixins.twelvefold.init.json"
  */
-public abstract class FermiumRegistryAPI {
+public abstract class TwelvefoldRegistryAPI {
 
-    private static final Logger LOGGER = LogManager.getLogger("FermiumRegistryAPI");
+    private static final Logger LOGGER = LogManager.getLogger("TwelvefoldRegistryAPI");
 
     private static HashMap<String, List<Supplier<Boolean>>> earlyMixins = new HashMap<>();
     private static HashMap<String, List<Supplier<Boolean>>> lateMixins = new HashMap<>();
@@ -62,38 +62,38 @@ public abstract class FermiumRegistryAPI {
      */
     public static void enqueueMixin(boolean late, String configuration, Supplier<Boolean> supplier) {
         if(configuration == null || configuration.trim().isEmpty()) {
-            LOGGER.warn("FermiumRegistryAPI supplied null or empty configuration name during mixin enqueue, ignoring.");
+            LOGGER.warn("TwelvefoldRegistryAPI supplied null or empty configuration name during mixin enqueue, ignoring.");
             return;
         }
         if(supplier == null) {//Do not evaluate supplier.get() itself for null now
-            LOGGER.warn("FermiumRegistryAPI supplied null supplier for configuration \"" + configuration + "\" during mixin enqueue, ignoring.");
+            LOGGER.warn("TwelvefoldRegistryAPI supplied null supplier for configuration \"" + configuration + "\" during mixin enqueue, ignoring.");
             return;
         }
         //Process rejects prior to application
         if(late) {
-            LOGGER.info("FermiumRegistryAPI supplied \"" + configuration + "\" for late mixin enqueue, adding.");
+            LOGGER.info("TwelvefoldRegistryAPI supplied \"" + configuration + "\" for late mixin enqueue, adding.");
             lateMixins.computeIfAbsent(configuration, k -> new ArrayList<>());
             lateMixins.get(configuration).add(supplier);
         }
         else {
-            LOGGER.info("FermiumRegistryAPI supplied \"" + configuration + "\" for early mixin enqueue, adding.");
+            LOGGER.info("TwelvefoldRegistryAPI supplied \"" + configuration + "\" for early mixin enqueue, adding.");
             earlyMixins.computeIfAbsent(configuration, k -> new ArrayList<>());
             earlyMixins.get(configuration).add(supplier);
         }
     }
 
     /**
-     * Designates a mixin config resource name to be ignored before application (Will only affect FermiumBooter applied mixins)
+     * Designates a mixin config resource name to be ignored before application (Will only affect TwelvefoldBooter applied mixins)
      * Note: Realistically you should not use this, but it is provided in the case of specific tweaker mod needs
      * @param configuration - mixin config resource name
      */
     @SuppressWarnings("unused")
     public static void removeMixin(String configuration) {
         if(configuration == null || configuration.trim().isEmpty()) {
-            LOGGER.warn("FermiumRegistryAPI supplied null or empty configuration name for mixin removal, ignoring.");
+            LOGGER.warn("TwelvefoldRegistryAPI supplied null or empty configuration name for mixin removal, ignoring.");
             return;
         }
-        LOGGER.info("FermiumRegistryAPI supplied \"" + configuration + "\" for mixin removal, adding.");
+        LOGGER.info("TwelvefoldRegistryAPI supplied \"" + configuration + "\" for mixin removal, adding.");
         rejectMixins.add(configuration);
     }
 

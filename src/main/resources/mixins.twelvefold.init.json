@@ -1,12 +1,12 @@
 {
   "required": true,
-  "package": "fermiumbooter.mixin",
+  "package": "twelvefold.twelvefoldbooter.mixin",
   "refmap": "mixins.fermiumbooter.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "target": "@env(INIT)",
   "minVersion": "0.8",
   "mixins": [
-    "FermiumMixinLoader"
+    "TwelvefoldMixinLoader"
   ],
   "injectors": {
     "maxShiftBy": 10

@@ -1,2 +1,2 @@
-# FermiumBooterRepoliticization
-Just a simple combination of [FermiumBooter](https://www.curseforge.com/minecraft/mc-mods/fermiumbooter) and [Bat Happy Mod](https://www.curseforge.com/minecraft/mc-mods/bat-happy-mod)
+# TwelvefoldBooter
+New advanced "booter" in order to replace MixinBooter and FermiumBooter

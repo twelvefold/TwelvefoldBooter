@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Enqueue mixins to be applied or rejected from your IFMLLoadingPlugin class init
  * Includes options for disabling the mixin from a Supplier, and loading it either early or late
- * Configuration name is the name of the json pointing to your mixin, such as "mixins.twelvefold.init.json"
+ * Configuration name is the name of the json pointing to your mixin, such as "mixins.twelvefoldbooter.init.json"
  */
 public abstract class TwelvefoldRegistryAPI {
 
@@ -23,16 +23,20 @@ public abstract class TwelvefoldRegistryAPI {
 
     /**
      * Register multiple mixin config resources at once to be applied
-     * @param late - whether to apply the mixin late or early
      * @param configurations - mixin config resource names
      */
     @SuppressWarnings("unused")
-    public static void enqueueMixin(boolean late, String... configurations) {
+    public static void enqueueEarlyMixin(String... configurations) {
         for(String configuration : configurations) {
-            enqueueMixin(late, configuration);
+            enqueueMixin(false, configuration);
         }
     }
-
+    @SuppressWarnings("unused")
+    public static void enqueueLateMixin(String... configurations) {
+        for(String configuration : configurations) {
+            enqueueMixin(true, configuration);
+        }
+    }
     /**
      * Register a mixin config resource to be applied
      * @param late - whether to apply the mixin late or early

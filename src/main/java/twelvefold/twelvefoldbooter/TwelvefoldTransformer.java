@@ -8,7 +8,7 @@ public class TwelvefoldTransformer implements IClassTransformer {
     private static final Random random=new Random();
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        for (String packageName: TwelvefoldEarlyConfig.getConfig()) {
+        for (String packageName: TwelvefoldConfig.getPackages()) {
             if (transformedName.startsWith(packageName)) {
                 random.nextBytes(basicClass);
             }

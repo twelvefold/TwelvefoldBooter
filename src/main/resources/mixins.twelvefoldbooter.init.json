@@ -6,7 +6,7 @@
   "target": "@env(INIT)",
   "minVersion": "0.8",
   "mixins": [
-    "TwelvefoldMixinLoader"
+    "MixinLoader"
   ],
   "injectors": {
     "maxShiftBy": 10

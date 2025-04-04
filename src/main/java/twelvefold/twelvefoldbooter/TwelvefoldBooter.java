@@ -7,6 +7,7 @@ import net.minecraft.util.ReportedException;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import twelvefold.twelvefoldbooter.config.TwelvefoldConfig;
 
 //@Mod(modid = TwelvefoldBooter.MODID, useMetadata = true)
 public class TwelvefoldBooter extends DummyModContainer
@@ -20,14 +21,6 @@ public class TwelvefoldBooter extends DummyModContainer
     }
     public static final String MODID = "twelvefoldbooter";
     public static final String NAME = "Twelvefold Booter";
-    private static final String[] incompatibleModIds={"fermiumbooter","mixinbooter","configanytime"};
-    /*
-    @Config(modid = MODID)
-    public static final class ModConfig{
-        public static String[] conflictingModIds=incompatibleModIds.clone();
-    }
-
-     */
 
 	@Instance(MODID)
     @SuppressWarnings("unused")
@@ -35,8 +28,6 @@ public class TwelvefoldBooter extends DummyModContainer
     @Subscribe
     public void preInit(FMLPreInitializationEvent event)
     {
-        //List<String> unfavoredModIds=new ArrayList<>(Arrays.asList(incompatibleModIds));
-        //unfavoredModIds.addAll(Arrays.asList(ModConfig.conflictingModIds));
         for(String unfavoredModId: TwelvefoldConfig.getMods())
         {
             if(Loader.isModLoaded(unfavoredModId))

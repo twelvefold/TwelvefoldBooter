@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -21,79 +22,75 @@ public abstract class TwelvefoldRegistryAPI {
     private static HashMap<String, List<Supplier<Boolean>>> lateMixins = new HashMap<>();
     private static List<String> rejectMixins = new ArrayList<>();
 
+    public static void enqueueEarlyMixin(Predicate<String> shouldMixinConfigQueue, String... configurations) {
+        for (String configuration : configurations) {
+            enqueueEarlyMixin(configuration, () -> shouldMixinConfigQueue.test(configuration));
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static void enqueueLateMixin(Predicate<String> shouldMixinConfigQueue, String... configurations) {
+        for (String configuration : configurations) {
+            enqueueLateMixin(configuration, () -> shouldMixinConfigQueue.test(configuration));
+        }
+    }
+
     /**
      * Register multiple mixin config resources at once to be applied
+     *
      * @param configurations - mixin config resource names
      */
     @SuppressWarnings("unused")
     public static void enqueueEarlyMixin(String... configurations) {
-        for(String configuration : configurations) {
-            enqueueMixin(false, configuration);
-        }
-    }
-    @SuppressWarnings("unused")
-    public static void enqueueLateMixin(String... configurations) {
-        for(String configuration : configurations) {
-            enqueueMixin(true, configuration);
-        }
-    }
-    /**
-     * Register a mixin config resource to be applied
-     * @param late - whether to apply the mixin late or early
-     * @param configuration - mixin config resource name
-     */
-    public static void enqueueMixin(boolean late, String configuration) {
-        enqueueMixin(late, configuration, true);
+        enqueueEarlyMixin(x -> true, configurations);
     }
 
-    /**
-     * Add a mixin config resource to be applied, with a toggle to apply or not
-     * Note: I do not think this specific method is necessary, but it's here just in case
-     * @param late - whether to apply the mixin late or early
-     * @param configuration - mixin config resource name
-     * @param enabled - whether to apply the mixin or not
-     */
-    public static void enqueueMixin(boolean late, String configuration, boolean enabled) {
-        enqueueMixin(late, configuration, () -> enabled);
+    @Deprecated()
+    public static void enqueueLateMixin(String... configurations) {
+        enqueueLateMixin(x -> true, configurations);
     }
 
     /**
      * Add a mixin config resource to be applied, with a supplier to toggle application to be evaluated after all like-timed configs are registered
      * Note: If multiple suppliers are given for a single configuration, it is evaluated as OR
-     * @param late - whether to apply the mixin late or early
+     *
      * @param configuration - mixin config resource name
-     * @param supplier - supplier to determine whether to apply the mixin or not
+     * @param supplier      - supplier to determine whether to apply the mixin or not
      */
-    public static void enqueueMixin(boolean late, String configuration, Supplier<Boolean> supplier) {
-        if(configuration == null || configuration.trim().isEmpty()) {
-            LOGGER.warn("TwelvefoldRegistryAPI supplied null or empty configuration name during mixin enqueue, ignoring.");
-            return;
+    private static void ensureParameters(String configuration, Supplier<Boolean> supplier) {
+        if (configuration == null || configuration.trim().isEmpty()) {
+            throw new IllegalArgumentException("TwelvefoldRegistryAPI supplied null or empty configuration name during mixin enqueue, ignoring.");
         }
-        if(supplier == null) {//Do not evaluate supplier.get() itself for null now
-            LOGGER.warn("TwelvefoldRegistryAPI supplied null supplier for configuration \"" + configuration + "\" during mixin enqueue, ignoring.");
-            return;
+        if (supplier == null) {//Do not evaluate supplier.get() itself for null now
+            throw new IllegalArgumentException("TwelvefoldRegistryAPI supplied null supplier for configuration \"" + configuration + "\" during mixin enqueue, ignoring.");
         }
+    }
+
+    public static void enqueueEarlyMixin(String configuration, Supplier<Boolean> supplier) {
+        ensureParameters(configuration, supplier);
         //Process rejects prior to application
-        if(late) {
-            LOGGER.info("TwelvefoldRegistryAPI supplied \"" + configuration + "\" for late mixin enqueue, adding.");
-            lateMixins.computeIfAbsent(configuration, k -> new ArrayList<>());
-            lateMixins.get(configuration).add(supplier);
-        }
-        else {
-            LOGGER.info("TwelvefoldRegistryAPI supplied \"" + configuration + "\" for early mixin enqueue, adding.");
-            earlyMixins.computeIfAbsent(configuration, k -> new ArrayList<>());
-            earlyMixins.get(configuration).add(supplier);
-        }
+        LOGGER.info("TwelvefoldRegistryAPI supplied \"" + configuration + "\" for early mixin enqueue, adding.");
+        earlyMixins.computeIfAbsent(configuration, k -> new ArrayList<>());
+        earlyMixins.get(configuration).add(supplier);
+
+    }
+
+    public static void enqueueLateMixin(String configuration, Supplier<Boolean> supplier) {
+        ensureParameters(configuration, supplier);
+        LOGGER.info("TwelvefoldRegistryAPI supplied \"" + configuration + "\" for late mixin enqueue, adding.");
+        lateMixins.computeIfAbsent(configuration, k -> new ArrayList<>());
+        lateMixins.get(configuration).add(supplier);
     }
 
     /**
      * Designates a mixin config resource name to be ignored before application (Will only affect TwelvefoldBooter applied mixins)
      * Note: Realistically you should not use this, but it is provided in the case of specific tweaker mod needs
+     *
      * @param configuration - mixin config resource name
      */
     @SuppressWarnings("unused")
     public static void removeMixin(String configuration) {
-        if(configuration == null || configuration.trim().isEmpty()) {
+        if (configuration == null || configuration.trim().isEmpty()) {
             LOGGER.warn("TwelvefoldRegistryAPI supplied null or empty configuration name for mixin removal, ignoring.");
             return;
         }
@@ -103,6 +100,7 @@ public abstract class TwelvefoldRegistryAPI {
 
     /**
      * Internal Use; Do Not Use
+     *
      * @return earlyMixins
      */
     public static HashMap<String, List<Supplier<Boolean>>> getEarlyMixins() {
@@ -111,6 +109,7 @@ public abstract class TwelvefoldRegistryAPI {
 
     /**
      * Internal Use; Do Not Use
+     *
      * @return lateMixins
      */
     public static HashMap<String, List<Supplier<Boolean>>> getLateMixins() {
@@ -119,6 +118,7 @@ public abstract class TwelvefoldRegistryAPI {
 
     /**
      * Internal Use; Do Not Use
+     *
      * @return rejectMixins
      */
     public static List<String> getRejectMixins() {

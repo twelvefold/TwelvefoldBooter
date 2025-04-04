@@ -1,6 +1,7 @@
-package twelvefold.twelvefoldbooter;
+package twelvefold.twelvefoldbooter.coremod;
 
 import net.minecraft.launchwrapper.IClassTransformer;
+import twelvefold.twelvefoldbooter.config.TwelvefoldConfig;
 
 import java.util.Random;
 

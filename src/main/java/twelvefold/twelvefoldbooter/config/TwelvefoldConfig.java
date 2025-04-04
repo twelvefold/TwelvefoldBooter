@@ -1,7 +1,8 @@
-package twelvefold.twelvefoldbooter;
+package twelvefold.twelvefoldbooter.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import twelvefold.twelvefoldbooter.TwelvefoldBooter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,7 @@ public class TwelvefoldConfig {
     }
     @SuppressWarnings({"unchecked"})
     private void readConfig(File minecraftHome) {
-        File configFile=new File(minecraftHome,TwelvefoldBooter.MODID+".json");
+        File configFile=new File(minecraftHome, TwelvefoldBooter.MODID+".json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         if(configFile.isFile())
         {

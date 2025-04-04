@@ -2,20 +2,18 @@ package twelvefold.twelvefoldbooter.mixin;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModDiscoverer;
-import twelvefold.twelvefoldbooter.TwelvefoldPlugin;
+import org.spongepowered.asm.mixin.*;
+import twelvefold.twelvefoldbooter.coremod.TwelvefoldPlugin;
 import twelvefold.twelvefoldbooter.api.TwelvefoldRegistryAPI;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
 import net.minecraftforge.fml.common.ModContainer;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.Mixins;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.transformer.ext.Extensions;
 import twelvefold.twelvefoldbooter.api.LateMixinLoader;
+import twelvefold.twelvefoldbooter.misc.TwelvefoldMisc;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -23,6 +21,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -64,13 +63,13 @@ public class MixinLoader {
                 try {
                     Class<?> clazz = Class.forName(annotated.getClassName());
                     TwelvefoldPlugin.LOGGER.info("Loading annotated late loader [{}] for its mixins.", clazz.getName());
-                    //Object instance = clazz.newInstance();
                     if(clazz.isAnnotationPresent(LateMixinLoader.class))
                     {
                         LateMixinLoader lateMixinLoader=clazz.getAnnotation(LateMixinLoader.class);
                         if(lateMixinLoader.value() != null)
                         {
-                            TwelvefoldRegistryAPI.enqueueLateMixin(lateMixinLoader.value());
+                            Predicate<String> shouldMixinConfigQueue = TwelvefoldMisc.getStringPredicate(lateMixinLoader, clazz);
+                            TwelvefoldRegistryAPI.enqueueLateMixin(shouldMixinConfigQueue,lateMixinLoader.value());
                         }
                     }
                 } catch (Throwable t) {

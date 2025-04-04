@@ -3,7 +3,7 @@ package twelvefold.twelvefoldbooter.mixin;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.discovery.ModDiscoverer;
 import twelvefold.twelvefoldbooter.TwelvefoldPlugin;
-import twelvefold.twelvefoldbooter.TwelvefoldRegistryAPI;
+import twelvefold.twelvefoldbooter.api.TwelvefoldRegistryAPI;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
 import net.minecraftforge.fml.common.ModContainer;

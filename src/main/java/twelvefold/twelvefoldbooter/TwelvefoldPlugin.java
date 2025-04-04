@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
+import twelvefold.twelvefoldbooter.api.TwelvefoldRegistryAPI;
 
 @IFMLLoadingPlugin.Name("TwelvefoldBooter")
 @IFMLLoadingPlugin.MCVersion("1.12.2")

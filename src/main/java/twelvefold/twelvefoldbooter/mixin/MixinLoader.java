@@ -1,24 +1,27 @@
 package twelvefold.twelvefoldbooter.mixin;
 
-import twelvefold.twelvefoldbooter.TwelvefoldPlugin;
-import twelvefold.twelvefoldbooter.TwelvefoldRegistryAPI;
+import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import net.minecraftforge.fml.common.discovery.ModDiscoverer;
+import org.spongepowered.asm.mixin.*;
+import twelvefold.twelvefoldbooter.coremod.TwelvefoldPlugin;
+import twelvefold.twelvefoldbooter.api.TwelvefoldRegistryAPI;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModClassLoader;
 import net.minecraftforge.fml.common.ModContainer;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.Mixins;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.transformer.ext.Extensions;
+import twelvefold.twelvefoldbooter.api.LateMixinLoader;
+import twelvefold.twelvefoldbooter.misc.TwelvefoldMisc;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -27,14 +30,15 @@ import java.util.function.Supplier;
  * https://github.com/DimensionalDevelopment/JustEnoughIDs/blob/master/src/main/java/org/dimdev/jeid/mixin/init/JEIDMixinLoader.java
  */
 @Mixin(Loader.class)
-public class TwelvefoldMixinLoader {
+public class MixinLoader {
 
     @Shadow(remap = false)
     private List<ModContainer> mods;
 
     @Shadow(remap = false)
     private ModClassLoader modClassLoader;
-
+    @Shadow(remap = false)
+    private ModDiscoverer discoverer;
     /**
      * @reason Load all mods now and load mod support mixin configs. This can't be done later
      * since constructing mods loads classes from them.
@@ -51,6 +55,28 @@ public class TwelvefoldMixinLoader {
         }
 
         //Start TwelvefoldBooter section
+        ASMDataTable asmDataTable=discoverer.getASMTable();
+
+        Set<ASMDataTable.ASMData> annotatedData = asmDataTable.getAll(LateMixinLoader.class.getName());
+        if (!annotatedData.isEmpty()) {
+            for (ASMDataTable.ASMData annotated : annotatedData) {
+                try {
+                    Class<?> clazz = Class.forName(annotated.getClassName());
+                    TwelvefoldPlugin.LOGGER.info("Loading annotated late loader [{}] for its mixins.", clazz.getName());
+                    if(clazz.isAnnotationPresent(LateMixinLoader.class))
+                    {
+                        LateMixinLoader lateMixinLoader=clazz.getAnnotation(LateMixinLoader.class);
+                        if(lateMixinLoader.value() != null)
+                        {
+                            Predicate<String> shouldMixinConfigQueue = TwelvefoldMisc.getStringPredicate(lateMixinLoader, clazz);
+                            TwelvefoldRegistryAPI.enqueueLateMixin(shouldMixinConfigQueue,lateMixinLoader.value());
+                        }
+                    }
+                } catch (Throwable t) {
+                    throw new RuntimeException("Unexpected error.", t);
+                }
+            }
+        }
 
         for(Map.Entry<String, List<Supplier<Boolean>>> entry : TwelvefoldRegistryAPI.getLateMixins().entrySet()) {
             //Check for removals

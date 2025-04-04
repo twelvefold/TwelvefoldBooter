@@ -1,4 +1,4 @@
-package twelvefold.twelvefoldbooter;
+package twelvefold.twelvefoldbooter.coremod;
 
 import java.io.File;
 import java.util.List;
@@ -12,6 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixins;
+import twelvefold.twelvefoldbooter.TwelvefoldBooter;
+import twelvefold.twelvefoldbooter.api.TwelvefoldRegistryAPI;
+import twelvefold.twelvefoldbooter.config.TwelvefoldConfig;
 
 @IFMLLoadingPlugin.Name("TwelvefoldBooter")
 @IFMLLoadingPlugin.MCVersion("1.12.2")
@@ -21,10 +24,10 @@ public class TwelvefoldPlugin implements IFMLLoadingPlugin {
 	public static final Logger LOGGER = LogManager.getLogger("TwelvefoldBooter");
 
 	public TwelvefoldPlugin() {
-		TwelvefoldEarlyConfig.init((File) FMLInjectionData.data()[6]);
+		TwelvefoldConfig.init((File) FMLInjectionData.data()[6]);
 		MixinBootstrap.init();
 		MixinExtrasBootstrap.init();
-		Mixins.addConfiguration("mixins.twelvefold.init.json");
+		Mixins.addConfiguration("mixins.twelvefoldbooter.init.json");
 	}
 
 	@Override

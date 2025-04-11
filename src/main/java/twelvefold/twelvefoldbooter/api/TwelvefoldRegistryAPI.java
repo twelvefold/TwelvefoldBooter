@@ -22,6 +22,7 @@ public abstract class TwelvefoldRegistryAPI {
     private static HashMap<String, List<Supplier<Boolean>>> lateMixins = new HashMap<>();
     private static List<String> rejectMixins = new ArrayList<>();
 
+    public static List<String> loadedClasses=new ArrayList<>();
     public static void enqueueEarlyMixin(Predicate<String> shouldMixinConfigQueue, String... configurations) {
         for (String configuration : configurations) {
             enqueueEarlyMixin(configuration, () -> shouldMixinConfigQueue.test(configuration));
@@ -133,5 +134,18 @@ public abstract class TwelvefoldRegistryAPI {
         earlyMixins = null;
         lateMixins = null;
         rejectMixins = null;
+    }
+    public static boolean isClassLoaded(String className)
+    {
+        return loadedClasses.contains(className);
+    }
+    public static boolean isPackageLoaded(String packageName)
+    {
+        for(String className:loadedClasses)
+        {
+            if(className.startsWith(packageName))
+                return true;
+        }
+        return false;
     }
 }

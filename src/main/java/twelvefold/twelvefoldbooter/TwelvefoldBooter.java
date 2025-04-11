@@ -7,6 +7,7 @@ import net.minecraft.util.ReportedException;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import twelvefold.twelvefoldbooter.api.TwelvefoldRegistryAPI;
 import twelvefold.twelvefoldbooter.config.TwelvefoldConfig;
 
 //@Mod(modid = TwelvefoldBooter.MODID, useMetadata = true)
@@ -33,6 +34,12 @@ public class TwelvefoldBooter extends DummyModContainer
             if(Loader.isModLoaded(unfavoredModId))
                 throw new ReportedException(CrashReport.makeCrashReport(new IllegalArgumentException(),
                         String.format("Conflicting mod detected:%s",unfavoredModId)));
+        }
+        for (String unfavoredPackage: TwelvefoldConfig.getPackages()) {
+            if (TwelvefoldRegistryAPI.isPackageLoaded(unfavoredPackage)) {
+                throw new ReportedException(CrashReport.makeCrashReport(new IllegalArgumentException(),
+                        String.format("Conflicting package detected:%s",unfavoredPackage)));
+            }
         }
     }
 

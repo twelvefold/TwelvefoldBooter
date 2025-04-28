@@ -6,7 +6,9 @@ import twelvefold.twelvefoldbooter.api.TwelvefoldRegistryAPI;
 public class TwelvefoldTransformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        TwelvefoldRegistryAPI.loadedClasses.add(transformedName);
+        if(!transformedName.startsWith("twelvefold.twelvefoldbooter")) {
+            TwelvefoldRegistryAPI.loadedClasses.add(transformedName);
+        }
         return basicClass;
     }
 }

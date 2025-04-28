@@ -139,7 +139,6 @@ public class MixinLoader {
             catch (NoSuchMethodException ex) {
                 // no-op
             }
-
             // Mixin 0.8+
             try {
                 Method prepareConfigs = mixinProcessorClass.getDeclaredMethod("prepareConfigs", MixinEnvironment.class);
